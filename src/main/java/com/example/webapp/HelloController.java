@@ -9,11 +9,6 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 public class HelloController {
 
-    @GetMapping("/")
-    public String home() {
-        return "Hello from the DevOps CI/CD project!";
-    }
-
     @GetMapping("/api/version")
     public Map<String, String> version() {
         return Map.of(

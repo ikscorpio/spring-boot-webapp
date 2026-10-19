@@ -1,0 +1,494 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#0b1220">
+  <title>DevOps Control Center</title>
+
+  <style>
+    :root {
+      --bg: #0b1220;
+      --panel: #111c2e;
+      --panel-light: #17253a;
+      --border: #26364c;
+      --text: #f1f5f9;
+      --muted: #94a3b8;
+      --green: #4ade80;
+      --blue: #60a5fa;
+      --purple: #c4b5fd;
+      --yellow: #fbbf24;
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      background: var(--bg);
+      color: var(--text);
+      font-family: Inter, "Segoe UI", Arial, sans-serif;
+      line-height: 1.5;
+    }
+
+    .layout {
+      min-height: 100vh;
+      display: grid;
+      grid-template-columns: 230px minmax(0, 1fr);
+    }
+
+    aside {
+      background: #0e1828;
+      border-right: 1px solid var(--border);
+      padding: 28px 18px;
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 42px;
+    }
+
+    .brand-icon {
+      width: 42px;
+      height: 42px;
+      border-radius: 12px;
+      background: #166534;
+      display: grid;
+      place-items: center;
+      font-size: 22px;
+    }
+
+    .brand h2 { font-size: 15px; margin: 0; }
+    .brand p { font-size: 11px; color: var(--muted); margin: 3px 0 0; }
+
+    .nav-label {
+      color: var(--muted);
+      font-size: 10px;
+      letter-spacing: 1.6px;
+      margin: 24px 10px 10px;
+    }
+
+    .nav-item {
+      display: block;
+      padding: 11px 12px;
+      margin: 5px 0;
+      border-radius: 9px;
+      color: #cbd5e1;
+      text-decoration: none;
+      font-size: 13px;
+    }
+
+    .nav-item.active {
+      background: #1b3046;
+      color: #86efac;
+    }
+
+    main { min-width: 0; padding: 32px; }
+
+    .topbar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 16px;
+      margin-bottom: 30px;
+    }
+
+    h1 { font-size: clamp(24px, 3vw, 32px); margin: 0; }
+    .subtitle { color: var(--muted); margin: 7px 0 0; font-size: 14px; }
+
+    .pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 8px 12px;
+      border: 1px solid var(--border);
+      border-radius: 30px;
+      font-size: 12px;
+      color: var(--muted);
+      white-space: nowrap;
+    }
+
+    .dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: var(--yellow);
+    }
+
+    .dot.up { background: var(--green); }
+    .dot.down { background: #f87171; }
+
+    .section-title {
+      font-size: 16px;
+      margin: 0 0 16px;
+    }
+
+    .cards {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 16px;
+      margin-bottom: 28px;
+    }
+
+    .card, .panel {
+      background: var(--panel);
+      border: 1px solid var(--border);
+      border-radius: 15px;
+    }
+
+    .card { padding: 21px; min-width: 0; }
+
+    .card-top {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+    }
+
+    .card-label { color: var(--muted); font-size: 12px; }
+
+    .card-icon {
+      display: grid;
+      place-items: center;
+      width: 38px;
+      height: 38px;
+      border-radius: 11px;
+      background: var(--panel-light);
+      font-size: 19px;
+    }
+
+    .metric {
+      font-size: 25px;
+      font-weight: 700;
+      margin-top: 17px;
+      overflow-wrap: anywhere;
+    }
+
+    .green { color: var(--green); }
+    .blue { color: var(--blue); }
+    .purple { color: var(--purple); }
+    .yellow { color: var(--yellow); }
+
+    .card-note { font-size: 11px; color: var(--muted); margin-top: 8px; }
+
+    .content-grid {
+      display: grid;
+      grid-template-columns: minmax(0, 1.25fr) minmax(280px, 0.75fr);
+      gap: 20px;
+    }
+
+    .panel { padding: 22px; min-width: 0; }
+
+    .panel-heading {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 18px;
+    }
+
+    .panel-heading h2 { font-size: 15px; margin: 0; }
+
+    .endpoint {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 15px 0;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .endpoint:last-child { border-bottom: 0; }
+
+    .endpoint-icon {
+      width: 34px;
+      height: 34px;
+      flex: 0 0 34px;
+      border-radius: 10px;
+      display: grid;
+      place-items: center;
+      background: var(--panel-light);
+    }
+
+    .endpoint-info { flex: 1; min-width: 0; }
+    .endpoint-name { font-size: 13px; font-weight: 600; }
+    .endpoint-path { color: var(--muted); font-size: 11px; overflow-wrap: anywhere; }
+
+    .status {
+      font-size: 11px;
+      color: var(--yellow);
+      white-space: nowrap;
+    }
+
+    .status.ok { color: var(--green); }
+    .status.error { color: #f87171; }
+
+    .details { display: grid; gap: 0; }
+
+    .detail-row {
+      display: flex;
+      justify-content: space-between;
+      gap: 16px;
+      padding: 14px 0;
+      border-bottom: 1px solid var(--border);
+      font-size: 12px;
+    }
+
+    .detail-row:last-child { border-bottom: 0; }
+    .detail-label { color: var(--muted); }
+    .detail-value { text-align: right; overflow-wrap: anywhere; }
+
+    .button {
+      background: #166534;
+      border: 1px solid #15803d;
+      color: white;
+      padding: 9px 13px;
+      border-radius: 9px;
+      cursor: pointer;
+      font-size: 12px;
+    }
+
+    .button:hover { background: #15803d; }
+
+    footer {
+      color: var(--muted);
+      font-size: 11px;
+      margin-top: 28px;
+      text-align: center;
+    }
+
+    @media (max-width: 1100px) {
+      .cards { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+      .content-grid { grid-template-columns: 1fr; }
+    }
+
+    @media (max-width: 650px) {
+      .layout { grid-template-columns: 1fr; }
+      aside { padding: 15px 18px; border-right: 0; border-bottom: 1px solid var(--border); }
+      .brand { margin-bottom: 12px; }
+      .nav-label { display: none; }
+      .nav-item { display: inline-block; margin-right: 4px; }
+      main { padding: 22px 16px; }
+      .topbar { align-items: flex-start; flex-direction: column; }
+      .cards { gap: 10px; }
+      .card { padding: 15px; }
+      .metric { font-size: 21px; }
+    }
+  </style>
+</head>
+
+<body>
+<div class="layout">
+  <aside>
+    <div class="brand">
+      <div class="brand-icon">⌘</div>
+      <div>
+        <h2>DevOps Control</h2>
+        <p>APPLICATION CONSOLE</p>
+      </div>
+    </div>
+
+    <div class="nav-label">WORKSPACE</div>
+    <a class="nav-item active" href="#overview">▦ &nbsp; Overview</a>
+    <a class="nav-item" href="#services">◈ &nbsp; Service Endpoints</a>
+    <a class="nav-item" href="#deployment">⬡ &nbsp; Deployment</a>
+
+    <div class="nav-label">APPLICATION</div>
+    <a class="nav-item" href="/api/version" target="_blank" rel="noopener">↗ &nbsp; Version API</a>
+    <a class="nav-item" href="/actuator/health" target="_blank" rel="noopener">♡ &nbsp; Health API</a>
+  </aside>
+
+  <main id="overview">
+    <div class="topbar">
+      <div>
+        <h1>Application Overview</h1>
+        <p class="subtitle">Monitor your Spring Boot application and deployment.</p>
+      </div>
+      <div class="pill">
+        <span class="dot" id="overall-dot"></span>
+        <span id="overall-status">Checking services...</span>
+      </div>
+    </div>
+
+    <h2 class="section-title">System Summary</h2>
+
+    <div class="cards">
+      <div class="card">
+        <div class="card-top">
+          <span class="card-label">Application Health</span>
+          <span class="card-icon green">♡</span>
+        </div>
+        <div class="metric" id="health-value">Checking</div>
+        <div class="card-note" id="health-note">Reading Spring Actuator</div>
+      </div>
+
+      <div class="card">
+        <div class="card-top">
+          <span class="card-label">Application Version</span>
+          <span class="card-icon blue">⌘</span>
+        </div>
+        <div class="metric blue" id="version-value">Loading</div>
+        <div class="card-note">Spring Boot application</div>
+      </div>
+
+      <div class="card">
+        <div class="card-top">
+          <span class="card-label">Deployment Platform</span>
+          <span class="card-icon purple">⬡</span>
+        </div>
+        <div class="metric purple" style="font-size:20px">Kubernetes</div>
+        <div class="card-note">Kind cluster · EC2 lab</div>
+      </div>
+
+      <div class="card">
+        <div class="card-top">
+          <span class="card-label">Configured Replicas</span>
+          <span class="card-icon yellow">▤</span>
+        </div>
+        <div class="metric yellow">2</div>
+        <div class="card-note">Configured in Deployment</div>
+      </div>
+    </div>
+
+    <div class="content-grid">
+      <section class="panel" id="services">
+        <div class="panel-heading">
+          <h2>Service Endpoints</h2>
+          <button class="button" id="refresh-button" type="button">Refresh checks</button>
+        </div>
+
+        <div class="endpoint">
+          <div class="endpoint-icon">⌂</div>
+          <div class="endpoint-info">
+            <div class="endpoint-name">Homepage</div>
+            <div class="endpoint-path">GET /</div>
+          </div>
+          <span class="status ok">Available</span>
+        </div>
+
+        <div class="endpoint">
+          <div class="endpoint-icon">⌘</div>
+          <div class="endpoint-info">
+            <div class="endpoint-name">Version API</div>
+            <div class="endpoint-path">GET /api/version</div>
+          </div>
+          <span class="status" id="version-status">Checking</span>
+        </div>
+
+        <div class="endpoint">
+          <div class="endpoint-icon">♡</div>
+          <div class="endpoint-info">
+            <div class="endpoint-name">Actuator Health</div>
+            <div class="endpoint-path">GET /actuator/health</div>
+          </div>
+          <span class="status" id="actuator-status">Checking</span>
+        </div>
+      </section>
+
+      <section class="panel" id="deployment">
+        <div class="panel-heading">
+          <h2>Deployment Information</h2>
+        </div>
+
+        <div class="details">
+          <div class="detail-row">
+            <span class="detail-label">Framework</span>
+            <span class="detail-value">Spring Boot</span>
+          </div>
+          <div class="detail-row">
+            <span class="detail-label">Runtime</span>
+            <span class="detail-value">Java 21</span>
+          </div>
+          <div class="detail-row">
+            <span class="detail-label">Container registry</span>
+            <span class="detail-value">Amazon ECR</span>
+          </div>
+          <div class="detail-row">
+            <span class="detail-label">Orchestrator</span>
+            <span class="detail-value">Kubernetes / Kind</span>
+          </div>
+          <div class="detail-row">
+            <span class="detail-label">Access host</span>
+            <span class="detail-value" id="host-value">Loading</span>
+          </div>
+          <div class="detail-row">
+            <span class="detail-label">Last checked</span>
+            <span class="detail-value" id="checked-at">Not checked yet</span>
+          </div>
+        </div>
+      </section>
+    </div>
+
+    <footer>
+      DevOps Control Center · Spring Boot · Jenkins CI/CD · Amazon ECR · Kubernetes
+    </footer>
+  </main>
+</div>
+
+<script>
+  const $ = (id) => document.getElementById(id);
+
+  $("host-value").textContent = window.location.host || "Local";
+
+  async function checkEndpoint(url) {
+    try {
+      const response = await fetch(url, { cache: "no-store" });
+      if (!response.ok) throw new Error("HTTP " + response.status);
+      return await response.json();
+    } catch (error) {
+      return null;
+    }
+  }
+
+  function setStatus(id, ok, successText, failureText) {
+    const element = $(id);
+    element.textContent = ok ? successText : failureText;
+    element.className = "status " + (ok ? "ok" : "error");
+  }
+
+  async function refreshDashboard() {
+    $("refresh-button").disabled = true;
+    $("refresh-button").textContent = "Checking...";
+
+    const [version, health] = await Promise.all([
+      checkEndpoint("/api/version"),
+      checkEndpoint("/actuator/health")
+    ]);
+
+    const versionOK = version !== null &&
+      typeof version.version !== "undefined";
+
+    const healthOK = health !== null && health.status === "UP";
+    const overallOK = versionOK && healthOK;
+
+    $("version-value").textContent = versionOK
+      ? version.version
+      : "Unavailable";
+
+    $("health-value").textContent = healthOK ? "UP" : "DOWN";
+    $("health-value").className = "metric " + (healthOK ? "green" : "");
+    $("health-note").textContent = healthOK
+      ? "Actuator reports healthy"
+      : "Unable to confirm healthy status";
+
+    setStatus("version-status", versionOK, "Available", "Unavailable");
+    setStatus("actuator-status", healthOK, "Available", "Unavailable");
+
+    $("overall-status").textContent = overallOK
+      ? "Application operational"
+      : "Check required";
+
+    $("overall-dot").className = "dot " + (overallOK ? "up" : "down");
+
+    $("checked-at").textContent = new Date().toLocaleTimeString();
+
+    $("refresh-button").disabled = false;
+    $("refresh-button").textContent = "Refresh checks";
+  }
+
+  $("refresh-button").addEventListener("click", refreshDashboard);
+  refreshDashboard();
+</script>
+</body>
+</html>
